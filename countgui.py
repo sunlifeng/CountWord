@@ -2,10 +2,9 @@
 # -*- coding:utf-8 -*-
 
 import sys,os
-import ConfigParser
 import argparse
 import thread
-import difflib
+
 import wx
 import wx.lib.masked as masked
 import wx.lib.mixins.listctrl as listmix
@@ -154,18 +153,16 @@ class FrameMain(wx.Frame):
     def on_start(self,e):
         print "Start process...."
         thread.start_new_thread(longRunning, (self.allfilename,))
+
     def OnUpdateOutputWindow(self, event):
         value = event.text
         self.logger.AppendText(value)
 
     def create_widgets(self):
         panel = wx.Panel(self)
- 
         self.logger = wx.TextCtrl(panel, pos=(100,20), size=(700,200), style=wx.TE_MULTILINE | wx.TE_READONLY)
-
         self.panel = wx.Panel(panel)
         self.graph = PanelGraph(panel, self)
-
         self.logger.Bind(EVT_STDDOUT, self.OnUpdateOutputWindow)       
         self.buttonStart = wx.Button(self.panel, wx.ID_ANY, 'Start')
         self.buttonOpen= wx.Button(self.panel, wx.ID_ANY, 'Open')
@@ -173,25 +170,15 @@ class FrameMain(wx.Frame):
         self.buttonOpen.SetToolTip(wx.ToolTip('Open File'))
         self.Bind(wx.EVT_BUTTON, self.on_start, self.buttonStart)
         self.Bind(wx.EVT_BUTTON, self.OnOpen, self.buttonOpen)
-
         grid = wx.GridBagSizer(5, 5)
-
         grid.Add(self.buttonStart, pos=(0, 0), span=(2, 1),
                  flag=wx.ALIGN_CENTER)
         grid.Add(self.buttonOpen, pos=(0, 1), span=(2, 1),
                  flag=wx.ALIGN_CENTER)
-
         grid.Add((20, 1), pos=(0, 2))
-
-
-
         grid.Add((20, 1), pos=(0, 7))
-
         grid.Add((20, 1), pos=(0, 9))
-
-
         self.panel.SetSizer(grid)
-
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.graph, 1, wx.EXPAND)
         sizer.Add(self.panel, 0, wx.ALIGN_CENTER)
@@ -199,6 +186,7 @@ class FrameMain(wx.Frame):
 
     def on_thread_status(self, event):
         status = event.data.get_status()
+
     def on_size(self, event):
         rect = self.status.GetFieldRect(1)
         self.statusProgress.SetPosition((rect.x + 10, rect.y + 2))

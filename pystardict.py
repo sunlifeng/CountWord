@@ -149,6 +149,7 @@ class _StarDictIdx(object):
         
         """ prepare main dict and parsing parameters """
         self._idx = {}
+        self.idx={}
         idx_offset_bytes_size = int(container.ifo.idxoffsetbits / 8)
         idx_offset_format = {4: 'L', 8: 'Q',}[idx_offset_bytes_size]
         idx_cords_bytes_size = idx_offset_bytes_size + 4
@@ -167,12 +168,13 @@ class _StarDictIdx(object):
             record_tuple = unpack('!%sc%sL' % (c, idx_offset_format),
                 matched_record)
             word, cords = record_tuple[:c-1], record_tuple[c:]
-            self._idx[word] = cords              
+            self._idx[word] = cords
+            self.idx["".join(word)]=cords             
     def keys(self):
         """
         return all keys of the word 
         """
-        return self._idx.keys()
+        return self.idx.keys()
     def __getitem__(self, word):
         """
         returns tuple (word_data_offset, word_data_size,) for word in .dict
